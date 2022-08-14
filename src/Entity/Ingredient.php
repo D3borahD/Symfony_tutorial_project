@@ -18,18 +18,18 @@ class Ingredient
     private ?int $id = null;
 
     #[ORM\Column(length: 50)]
-    #[Assert\NotBlank()]
+    #[Assert\NotBlank]
     #[Assert\Length(min: 2, max: 50)]
     private ?string $name = null;
 
     #[ORM\Column]
-    #[Assert\NotNull()]
+    #[Assert\NotNull]
     #[Assert\Positive]
     #[Assert\LessThan(200)]
     private ?float $price = null;
 
     #[ORM\Column]
-    #[Assert\NotNull()]
+    #[Assert\NotNull]
     private ?\DateTimeImmutable $createdAt = null;
 
     /**
