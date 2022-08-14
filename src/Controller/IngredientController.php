@@ -59,4 +59,56 @@ class IngredientController extends AbstractController
             'form' => $form->createView()
         ]);
     }
+
+    #[Route('/ingredient/edition/{id}', name: 'ingredient.edit', methods: ['GET', 'POST'])]
+    public function edit(
+        Ingredient $ingredient,
+        Request $request,
+        EntityManagerInterface $manager): Response
+    {
+        $form = $this->createForm(IngredientType::class, $ingredient);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            // dd($form->getData());
+            $ingredient = $form->getData();
+
+            $manager->persist($ingredient);
+            $manager->flush();
+
+            $this->addFlash(
+                'success',
+                'Votre ingrédient a été modifié avec succès!'
+            );
+
+            return $this->redirectToRoute('app_ingredient');
+        }
+            return $this->render('pages/ingredient/edit.html.twig', [
+            'form' => $form->createView()
+        ]);
+    }
+
+    #[Route('/ingredient/suppression/{id}', 'ingredient.delete', methods: ['GET', 'DELETE'])]
+    public function delete(EntityManagerInterface $manager, Ingredient $ingredient): Response
+    {
+        /*DON'T WORK*/
+   /*     if(!$ingredient){
+            $this->addFlash(
+                'warning',
+                'ingredient non trouvé!'
+            );
+            return $this->redirectToRoute('app_ingredient');
+        }*/
+
+        $manager->remove($ingredient);
+        $manager->flush();
+
+        $this->addFlash(
+            'success',
+            'Votre ingrédient a été supprimé avec succès!'
+        );
+
+        return $this->redirectToRoute('app_ingredient');
+    }
 }
