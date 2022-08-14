@@ -6,6 +6,14 @@
     <div class="container mt-4">
         {% if not ingredients.items is same as ([]) %}
         <h1>Mes ingrédients</h1>
+            <a href="{{ path('ingredient.new') }}" class="btn btn-primary">Créer un ingrédient</a>
+
+
+            {% for message in app.flashes('success') %}
+                <div class="alert alert-success mt-4">
+                    {{ message }}
+                </div>
+            {% endfor %}
             <div class="count mt-4">
                Il y a  {{ ingredients.getTotalItemCount }} ingrédients au total
             </div>
