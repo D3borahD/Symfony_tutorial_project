@@ -7,10 +7,11 @@
         <div class="collapse navbar-collapse" id="navbarColor01">
             <ul class="navbar-nav me-auto">
                 <li class="nav-item">
-                    <a class="nav-link active" href="{{ path('home.index') }}">Accueil
+                    <a class="nav-link active" href="{{ path ('home.index') }}">Accueil
                         <span class="visually-hidden">(current)</span>
                     </a>
                 </li>
+                {% if app.user %}
                 <li class="nav-item">
                     <a class="nav-link active" href="{{ path('app_recipe') }}">Recettes
                         <span class="visually-hidden">(current)</span>
@@ -21,6 +22,36 @@
                         <span class="visually-hidden">(current)</span>
                     </a>
                 </li>
+                {% endif %}
+            </ul>
+        </div>
+        <div class="d-flex">
+            <ul class="navbar-nav me-auto">
+                {% if app.user %}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">{{ app.user.fullName }}</a>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" href="{{ path('app_user', {id : app.user.id}) }}">Modifier mes informations</a>
+                            <a class="dropdown-item" href="{{ path('user.edit.password', {id : app.user.id}) }}">Modifier mon mot de passe</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="{{ path('security.logout') }}">Déconnexion</a>
+
+                        </div>
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{{ path('security.login') }}">Connexion
+                            <span class="visually-hidden">(current)</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{{ path('security.registration') }}">Inscription
+                            <span class="visually-hidden">(current)</span>
+                        </a>
+                    </li>
+
+                {% endif %}
+
             </ul>
         </div>
     </div>
