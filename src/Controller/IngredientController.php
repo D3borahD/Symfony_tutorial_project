@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Ingredient;
+use App\Entity\User;
 use App\Form\IngredientType;
 use App\Repository\IngredientRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -19,7 +20,7 @@ class IngredientController extends AbstractController
     public function index(IngredientRepository $repository, PaginatorInterface $paginator, Request $request): Response
     {
         $ingredients = $paginator->paginate(
-            $repository->findAll(),
+            $repository->findBy(['user' => $this->getUser()]),
             $request->query->getInt('page', 1),
             10
         );
@@ -42,6 +43,8 @@ class IngredientController extends AbstractController
 
             // dd($form->getData());
              $ingredient = $form->getData();
+             # MISE A JOUR => QD un utilisateur ajoute un ingredient ça s'ajoute à l'utilisateur courant
+             $ingredient->setUser($this->getUser());
 
              $manager->persist($ingredient);
              $manager->flush();
@@ -92,14 +95,7 @@ class IngredientController extends AbstractController
     #[Route('/ingredient/suppression/{id}', 'ingredient.delete', methods: ['GET', 'DELETE'])]
     public function delete(EntityManagerInterface $manager, Ingredient $ingredient): Response
     {
-        /*DON'T WORK*/
-   /*     if(!$ingredient){
-            $this->addFlash(
-                'warning',
-                'ingredient non trouvé!'
-            );
-            return $this->redirectToRoute('app_ingredient');
-        }*/
+
 
         $manager->remove($ingredient);
         $manager->flush();
