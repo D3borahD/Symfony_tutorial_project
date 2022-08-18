@@ -39,7 +39,7 @@ class RecipeController extends AbstractController
         ]);
     }
 
-    #[Route('/recette/publique', name: 'recipe.index_public', methods: ['GET'])]
+    #[Route('/recette/communaute', name: 'recipe.community', methods: ['GET'])]
     public function indexPublic(
         PaginatorInterface $paginator,
         RecipeRepository $repository,
