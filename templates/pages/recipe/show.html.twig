@@ -6,6 +6,11 @@ SymRecipy - {{ recipe.name }}
 {% block body %}
     <div class="container">
         <h1 class="mt-4">{{ recipe.name }}</h1>
+
+        <div class="recipe_image">
+            <img style="max-width: 500px" src="{{ vich_uploader_asset(recipe, 'imageFile') }}" alt="image de la recette">
+        </div>
+
         <p>La moyenne de cette recette est de : {{ recipe.average }}/5</p>
 
         <span class="badge bg-primary">Crée le {{ recipe.createdAt|date('d/m/Y')}} </span>
