@@ -1,6 +1,5 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
     <div class="container-fluid">
-        <a class="navbar-brand" href="{{ path('home.index') }}">SymRecipe</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -11,9 +10,14 @@
                         <span class="visually-hidden">(current)</span>
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="{{ path('recipe.community') }}">Recettes de la communauté
+                        <span class="visually-hidden">(current)</span>
+                    </a>
+                </li>
                 {% if app.user %}
                 <li class="nav-item">
-                    <a class="nav-link active" href="{{ path('app_recipe') }}">Recettes
+                    <a class="nav-link active" href="{{ path('app_recipe') }}"> Mes recettes
                         <span class="visually-hidden">(current)</span>
                     </a>
                 </li>
