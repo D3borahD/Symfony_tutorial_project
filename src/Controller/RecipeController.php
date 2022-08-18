@@ -2,24 +2,24 @@
 
 namespace App\Controller;
 
-use App\Entity\Ingredient;
 use App\Entity\Mark;
 use App\Entity\Recipe;
-use App\Form\IngredientType;
 use App\Form\MarkType;
 use App\Form\RecipeType;
-use App\Repository\IngredientRepository;
 use App\Repository\MarkRepository;
 use App\Repository\RecipeRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\Tools\DebugUnitOfWorkListener;
+use Knp\Component\Pager\PaginatorInterface;
+
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Knp\Component\Pager\PaginatorInterface;
+
 
 
 class RecipeController extends AbstractController
@@ -58,50 +58,7 @@ class RecipeController extends AbstractController
         ]);
     }
 
-    #[Security("is_granted('ROLE_USER') and recipe.isIsPublic() === true")]
-    #[Route('/recette/{id}', 'recipe.show', methods: ['GET', 'POST'])]
-    public function show(Recipe $recipe, Request $request, MarkRepository $markRepository, EntityManagerInterface $manager): Response {
 
-        $mark = new Mark();
-
-        $form = $this->createForm(MarkType::class, $mark);
-        $form->handleRequest($request);
-        if($form->isSubmitted() && $form->isValid()){
-            $mark->setUser($this->getUser())
-            ->setRecipe($recipe);
-
-            $existingMark = $markRepository->findOneBy([
-                    'user' => $this->getUser(),
-                    'recipe' => $recipe,
-            ]
-            );
-
-            if(!$existingMark){
-                $manager->persist($mark);
-            } else {
-                $existingMark->setMark(
-                    $form->getData()->getMark()
-                );
-            }
-
-            $manager->flush();
-
-            $this->addFlash(
-                'success',
-                'Votre notre à bien été prise en compte'
-            );
-
-            return $this->redirectToRoute('recipe.show', ['id' => $recipe->getId()]);
-         
-        }
-
-
-
-        return $this->render('pages/recipe/show.html.twig', [
-            'recipe' => $recipe,
-            'form' => $form->createView()
-        ]);
-    }
 
     #[Route('/recette/nouveau', name: 'recipe.new', methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_USER')]
@@ -179,4 +136,55 @@ class RecipeController extends AbstractController
 
         return $this->redirectToRoute('app_recipe');
     }
+
+
+    #[Security("is_granted('ROLE_USER') and (recipe.getIsPublic() === true || user === recipe.getUser())")]
+    #[Route('/recette/{id}', 'recipe.show', methods: ['GET', 'POST'])]
+    public function show(
+        Recipe $recipe,
+        Request $request,
+        MarkRepository $markRepository,
+        EntityManagerInterface $manager
+    ): Response {
+
+
+        $mark = new Mark();
+        $form = $this->createForm(MarkType::class, $mark);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $mark->setUser($this->getUser())
+                ->setRecipe($recipe);
+
+            $existingMark = $markRepository->findOneBy([
+                'user' => $this->getUser(),
+                'recipe' => $recipe
+            ]);
+
+            if (!$existingMark) {
+                $manager->persist($mark);
+            } else {
+                $existingMark->setMark(
+                    $form->getData()->getMark()
+                );
+            }
+
+            $manager->flush();
+
+            $this->addFlash(
+                'success',
+                'Votre note a bien été prise en compte.'
+            );
+
+            return $this->redirectToRoute('recipe.show', ['id' => $recipe->getId()]);
+        }
+
+        return $this->render('pages/recipe/show.html.twig', [
+            'recipe' => $recipe,
+            'form' => $form->createView()
+        ]);
+    }
+
+
+
 }
