@@ -4,13 +4,8 @@
 
 {% block body %}
     <div class="container">
-
         <h1 class="mt-4">Modification de la recette</h1>
-
-{#
-        {{ form_start(form) }}
-#}
-
+        <form name="ingredient" method="post">
         <div class="form-group">
             {{ form_label(form.name) }}
             {{ form_widget(form.name) }}
@@ -18,6 +13,9 @@
                 {{ form_errors(form.name) }}
             </div>
         </div>
+            <div class="form-image">
+            {{ form_row(form.imageFile) }}
+            </div>
         <div class="form-group">
             {{ form_label(form.time) }}
             {{ form_widget(form.time) }}
@@ -53,7 +51,6 @@
                 {{ form_errors(form.price) }}
             </div>
         </div>
-
         <div class="form-check mt-4">
             {{ form_widget(form.isFavorite) }}
             {{ form_label(form.isFavorite) }}
@@ -62,15 +59,9 @@
             </div>
         </div>
         {{ form_row(form.ingredients) }}
-
-        <div class="form-group">
-            {{ form_row(form.submit) }}
-        </div>
-
-
-{#
-        {{ form_end(form) }}
-#}
+        {{ form_row(form._token) }}
+        <button type="submit" id="ingredient_submit" name="ingredient[submit]" class="btn btn-primary mt-4">Modifier ma recette</button>
+        </form>
     </div>
 {% endblock %}
 

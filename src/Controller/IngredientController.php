@@ -33,7 +33,7 @@ class IngredientController extends AbstractController
         ]);
     }
 
-    #[Route('/ingredient/nouveau', name: 'ingredient.new', methods: ['GET', 'POST'])]
+    #[Route('/ingredient/creation', name: 'ingredient.new', methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_USER')]
     public function new(
         Request $request,
@@ -78,8 +78,6 @@ class IngredientController extends AbstractController
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-
-            // dd($form->getData());
             $ingredient = $form->getData();
 
             $manager->persist($ingredient);
@@ -97,11 +95,10 @@ class IngredientController extends AbstractController
         ]);
     }
 
+    #[Security("is_granted('ROLE_USER') and user === ingredient.getUser()")]
     #[Route('/ingredient/suppression/{id}', 'ingredient.delete', methods: ['GET', 'DELETE'])]
     public function delete(EntityManagerInterface $manager, Ingredient $ingredient): Response
     {
-
-
         $manager->remove($ingredient);
         $manager->flush();
 
@@ -109,7 +106,6 @@ class IngredientController extends AbstractController
             'success',
             'Votre ingrédient a été supprimé avec succès!'
         );
-
         return $this->redirectToRoute('app_ingredient');
     }
 }

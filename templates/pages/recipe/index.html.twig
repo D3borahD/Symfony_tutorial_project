@@ -6,16 +6,17 @@
 
 
 <div class="container mt-4">
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success mt-4">
+            {{ message }}
+        </div>
+    {% endfor %}
         {% if not recipes.items is same as ([]) %}
             <h1>Mes recettes</h1>
             <a href="{{ path('recipe.new') }}" class="btn btn-primary">Créer une recette</a>
-            {% for message in app.flashes('success') %}
-                <div class="alert alert-success mt-4">
-                    {{ message }}
-                </div>
-            {% endfor %}
+
             <div class="count mt-4">
-                Il y a  {{ recipes.getTotalItemCount }} recettes au total
+                Il y a  {{ recipes.getTotalItemCount }} recette(s) au total
             </div>
             <table class="table table-hover mt-4">
                 <thead>
@@ -34,24 +35,21 @@
                     <tr class="table-primary">
                         <th scope="row">{{ recipe.id }}</th>
                         <td>{{ recipe.name }}</td>
-                        <td>{{ (recipe.price is null) ? 'non renseigné' : recipe.price }}</td>
-
+                        <td>{{ (recipe.price is null) ? 'non renseigné' : recipe.price |number_format(2, '.', ',') }}€</td>
                         <td>{{ (recipe.difficulty is null) ? 'non renseigné' : recipe.difficulty }}</td>
-
                         <td>{{ recipe.createdAt|date("d/m/Y") }}</td>
                         <td><a href="{{ path('recipe.edit', { id: recipe.id}) }}" class="btn btn-info">Modifier</a></td>
                         <td><a href="{{ path('recipe.delete', { id: recipe.id}) }}" class="btn btn-danger">Supprimer</a></td>
-
                     </tr>
                 {% endfor %}
                 </tbody>
             </table>
-
             <div class="navigation d-flex justify-content-center mt-4">
                 {{ knp_pagination_render(recipes) }}
             </div>
         {% else %}
             <p>Il n'y a pas de recette</p>
+            <a href="{{ path('recipe.new') }}" class="btn btn-primary">Créer une recette</a>
         {% endif %}
 </div>
 {% endblock %}

@@ -53,11 +53,10 @@ class RecipeController extends AbstractController
             10
         );
 
-        return $this->render('pages/recipe.index_public.html.twig', [
+        return $this->render('pages/recipe/community.html.twig', [
             'recipes' => $recipes
         ]);
     }
-
 
 
     #[Route('/recette/nouveau', name: 'recipe.new', methods: ['GET', 'POST'])]
@@ -71,8 +70,6 @@ class RecipeController extends AbstractController
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-
-            // dd($form->getData());
             $recipe = $form->getData();
             $recipe->setUser($this->getUser());
 
@@ -83,10 +80,8 @@ class RecipeController extends AbstractController
                 'success',
                 'Votre recette a été ajouté avec succès!'
             );
-
             return $this->redirectToRoute('app_recipe');
         }
-
         return $this->render('pages/recipe/new.html.twig', [
             'form' => $form->createView()
         ]);
@@ -105,7 +100,6 @@ class RecipeController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
 
             $recipe = $form->getData();
-
             $manager->persist($recipe);
             $manager->flush();
 
@@ -113,7 +107,6 @@ class RecipeController extends AbstractController
                 'success',
                 'Votre recette a été modifiée avec succès!'
             );
-
             return $this->redirectToRoute('app_recipe');
         }
         return $this->render('pages/recipe/edit.html.twig', [
@@ -121,11 +114,10 @@ class RecipeController extends AbstractController
         ]);
     }
 
+    #[Security("is_granted('ROLE_USER') and user === recipe.getUser()")]
     #[Route('/recette/suppression/{id}', 'recipe.delete', methods: ['GET', 'DELETE'])]
     public function delete(EntityManagerInterface $manager, Recipe $recipe): Response
     {
-
-
         $manager->remove($recipe);
         $manager->flush();
 
@@ -133,10 +125,8 @@ class RecipeController extends AbstractController
             'success',
             'Votre recette a été supprimée avec succès!'
         );
-
         return $this->redirectToRoute('app_recipe');
     }
-
 
     #[Security("is_granted('ROLE_USER') and (recipe.getIsPublic() === true || user === recipe.getUser())")]
     #[Route('/recette/{id}', 'recipe.show', methods: ['GET', 'POST'])]
@@ -146,11 +136,9 @@ class RecipeController extends AbstractController
         MarkRepository $markRepository,
         EntityManagerInterface $manager
     ): Response {
-
-
         $mark = new Mark();
-        $form = $this->createForm(MarkType::class, $mark);
 
+        $form = $this->createForm(MarkType::class, $mark);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $mark->setUser($this->getUser())
@@ -170,7 +158,6 @@ class RecipeController extends AbstractController
             }
 
             $manager->flush();
-
             $this->addFlash(
                 'success',
                 'Votre note a bien été prise en compte.'

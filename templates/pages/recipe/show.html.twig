@@ -23,7 +23,7 @@ SymRecipy - {{ recipe.name }}
 
             <p> Pour :
                 {% if recipe.nbPeople %}
-                {{ recipe.nbPeople }} personnes
+                {{ recipe.nbPeople }} personne(s)
                 {% else %}
                  Non renseigné
                 {% endif %}
@@ -35,7 +35,7 @@ SymRecipy - {{ recipe.name }}
         {% endif %}
 
         {% if recipe.price %}
-            <p> Prix (en euro) : {{ recipe.price }}</p>
+            <p> Prix (en euro) : {{ recipe.price|number_format(2, '.', ',')  }}€</p>
         {% else %}
             <p>Non renseigné</p>
         {% endif %}
