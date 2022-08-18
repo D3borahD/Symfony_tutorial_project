@@ -136,7 +136,7 @@ class RecipeController extends AbstractController
 
         return $this->redirectToRoute('app_recipe');
     }
-
+    
 
     #[Security("is_granted('ROLE_USER') and (recipe.getIsPublic() === true || user === recipe.getUser())")]
     #[Route('/recette/{id}', 'recipe.show', methods: ['GET', 'POST'])]
